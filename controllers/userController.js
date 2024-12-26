@@ -1,11 +1,11 @@
 const { handleError } = require('../helpers/failure');
-const userRepository = require('../repository/userRepository');
-const { updateUser } = require('../services/userService');
+const { updateUser, removeUser, listUsers } = require('../services/userService');
 
 const list = async (request, response) => {
     try {
-        users = await userRepository.listUsers();
-        response.status(200).json({ users });
+
+        await listUsers(response);
+
     } catch (error) {
         return handleError(response, error);
     }
@@ -13,11 +13,10 @@ const list = async (request, response) => {
 
 const remove = async (request, response) => {
     try {
-        const { id } = request.params;
 
-        await userRepository.removeUser(id);
-        response.status(200).json({ message: 'User successfully removed!' });
-        
+        const { id } = request.params;
+        await removeUser(id, response);
+
     } catch (error) {
         return handleError(response, error);
     }
