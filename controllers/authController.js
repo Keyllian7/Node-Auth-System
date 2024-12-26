@@ -1,9 +1,7 @@
 const userRepository = require('../repository/userRepository');
-const { validate } = require('../helpers/validate');
 const { hashingPassword, comparePassword } = require('../helpers/password');
 const { handleError } = require('../helpers/failure');
 const { generateToken } = require('../helpers/token');
-const { registerValidation, loginValidation } = require('../validations/userValidation');
 const { createUser } = require('../repository/userRepository');
 
 const register = async (request, response) => {

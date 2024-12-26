@@ -17,5 +17,4 @@ const listUsers = async () => {
     return await userRepository.listUsers();
 }
 
-
 module.exports = { updateUser, listUsers }; 

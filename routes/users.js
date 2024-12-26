@@ -5,6 +5,8 @@ const userController = require('../controllers/userController');
 const { validateRequest } = require('../middlewares/validateRequest');
 const { updateValidation } = require('../validations/userValidation');
 const router = express.Router();
+const files = require('../helpers/files');
+files('../swagger/user');
 
 router.get('/list', verifyToken, userController.list);
 

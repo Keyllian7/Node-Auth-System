@@ -5,9 +5,9 @@ const swaggerSettings = {
     swaggerDefinition: {
         openapi: '3.0.0',
         info: {
-            title: 'Mizu-Lab API',
+            title: 'User authentication system ',
             version: '1.0.0',
-            description: 'API for automation and systems management in the Mizu Cimentos laboratory',
+            description: 'Basic user authentication system developed in Node.js',
             contact: {
                 name: 'Keyllian Azevedo',
             },
@@ -24,7 +24,7 @@ const swaggerSettings = {
         './models/*.js',
         './swagger/auth/*.js',
         './swagger/equipment/*.js',
-        './swagger/users/*.js'
+        './swagger/user/*.js'
     ],
 };
 
