@@ -1,6 +1,6 @@
 const { handleError } = require('../helpers/failure');
 const userRepository = require('../repository/userRepository');
-const userService = require('../services/userService');
+const { updateUser } = require('../services/userService');
 
 const list = async (request, response) => {
     try {
@@ -25,12 +25,11 @@ const remove = async (request, response) => {
 
 const update = async (request, response) => {
     try {
+
         const { id } = request.params;
         const { name, email, password } = request.body;
         const userInformation = { name, email, password };
-
-        await userService.updateUser(id, userInformation);
-        response.status(200).json({ message: 'User updated successfully!' });
+        await updateUser(id, userInformation, response);
 
     } catch (error) {
         return handleError(response, error);

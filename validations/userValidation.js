@@ -16,7 +16,14 @@ const updateValidation = joi.object({
     name: joi.string().min(2).optional(),
     email: joi.string().email().optional(),
     password: joi.string().min(4).optional(),
-    validationPassword: joi.string().valid(joi.ref('password')).required()
+    validationPassword: joi.string().valid(joi.ref('password'))
+        .when('password',
+            {
+                is: joi.exist()
+                , then: joi.required()
+                , otherwise: joi.optional()
+            }
+        )
 })
 
 module.exports = { registerValidation, loginValidation, updateValidation };

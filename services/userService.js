@@ -1,16 +1,23 @@
 const userRepository = require('../repository/userRepository');
 const { hashingPassword } = require('../helpers/password');
 
-const updateUser = async (id, requestInformation) => {
-    const { name, email, password } = requestInformation
-    if (!password) {
-        userInformation = { name, email };
+const updateUser = async (id, requestInformation, response) => {
+    try {
+        const { name, email, password } = requestInformation
+        let userInformation;
+        if (password) {
+            const hashedPassword = await hashingPassword(password);
+            userInformation = { name, email, password: hashedPassword };
+        } else {
+            userInformation = { name, email };
+        }
+        
         await userRepository.updateUser(id, userInformation);
-    } else {
-        const hashedPassword = await hashingPassword(password);
-        const userInformation = { name, email, password: hashedPassword };
-        await userRepository.updateUser(id, userInformation);
-    }
+        return response.status(200).json({ message: 'User updated' })
+
+    } catch (error) {
+    return handleError(response, error);
+}
 }
 
 const listUsers = async () => {
