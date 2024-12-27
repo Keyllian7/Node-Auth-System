@@ -3,10 +3,10 @@ const { hashingPassword, comparePassword } = require('../helpers/password');
 const { handleError } = require('../helpers/failure');
 const { generateToken } = require('../helpers/token');
 
-async function registerUser(userInformation, response) {
+async function registerUser(registerDto, response) {
     try {
 
-        const { name, email, password } = userInformation;
+        const { name, email, password } = registerDto;
 
         const existingUser = await userRepository.searchUserByEmail(email);
         if (existingUser) { return response.status(409).json({ message: 'User already exists!' }) }
@@ -22,10 +22,10 @@ async function registerUser(userInformation, response) {
     }
 }
 
-async function loginUser(loginInformation, response) {
+async function loginUser(loginDto, response) {
     try {
 
-        const { email, password } = loginInformation;
+        const { email, password } = loginDto;
 
         const existingUser = await userRepository.searchUserByEmail(email);
         if (!existingUser) { return response.status(404).json({ message: 'User not found!' }) }

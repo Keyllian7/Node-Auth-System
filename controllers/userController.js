@@ -1,5 +1,6 @@
 const { handleError } = require('../helpers/failure');
 const { updateUser, removeUser, listUsers } = require('../services/userService');
+const UpdateDTO = require('../dto/user/updateDTO');
 
 const list = async (request, response) => {
     try {
@@ -27,8 +28,8 @@ const update = async (request, response) => {
 
         const { id } = request.params;
         const { name, email, password } = request.body;
-        const userInformation = { name, email, password };
-        await updateUser(id, userInformation, response);
+        const updateDto = new UpdateDTO(name, email, password);
+        await updateUser(id, updateDto, response);
 
     } catch (error) {
         return handleError(response, error);
