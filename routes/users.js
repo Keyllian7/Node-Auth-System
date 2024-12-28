@@ -6,9 +6,10 @@ const { validateRequest } = require('../middlewares/validateRequest');
 const { updateValidation } = require('../validations/userValidation');
 const router = express.Router();
 const files = require('../helpers/files');
+const authorizationRole = require('../middlewares/authorizationRole');
 files('../swagger/user');
 
-router.get('/list', verifyToken, userController.list);
+router.get('/list', verifyToken, authorizationRole('admin') ,userController.list);
 
 router.delete('/remove/:id', verifyToken, validateId, userController.remove);
 

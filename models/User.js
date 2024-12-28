@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const RolesEnum = require('../enums/Roles');
 
 const User = mongoose.model('User', {
     name: {
@@ -12,6 +13,12 @@ const User = mongoose.model('User', {
     password: {
         type: String,
         required: true
+    },
+    role: {
+        type: String,
+        enum: Object.values(RolesEnum),
+        required: false,
+        default: RolesEnum.USER
     }
 });
 

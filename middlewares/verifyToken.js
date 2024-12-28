@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
+const userRepository = require('../repository/userRepository');
 
-function verifyToken(request, response, next) {
+async function verifyToken(request, response, next) {
     const header = request.headers['authorization'];
     const token = header && header.split(' ')[1];
 
@@ -8,6 +9,10 @@ function verifyToken(request, response, next) {
 
     try {
         const jwtPassword = process.env.JWT_PASSWORD;
+        const decoded = jwt.verify(token, jwtPassword);
+        const user = await userRepository.searchUserById(decoded.id);
+        if (!user) { return response.status(401).json({ message: 'Invalid token!' }) }
+        request.user = user
         jwt.verify(token, jwtPassword)
         next();
     } catch(err) { return response.status(401).json({ message: 'Invalid token!' })}
