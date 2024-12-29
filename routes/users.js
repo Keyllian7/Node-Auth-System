@@ -7,12 +7,13 @@ const { updateValidation } = require('../validations/userValidation');
 const router = express.Router();
 const files = require('../helpers/files');
 const authorizationRole = require('../middlewares/authorizationRole');
+const sanitizeRequest = require('../middlewares/sanitize');
 files('../swagger/user');
 
 router.get('/list', verifyToken, authorizationRole('admin') ,userController.list);
 
 router.delete('/remove/:id', verifyToken, validateId, userController.remove);
 
-router.patch('/update/:id', verifyToken, validateId, validateRequest(updateValidation), userController.update);
+router.patch('/update/:id', sanitizeRequest, verifyToken, validateId, validateRequest(updateValidation), userController.update);
 
 module.exports = router;
