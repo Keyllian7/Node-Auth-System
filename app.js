@@ -7,7 +7,8 @@ const auth = require('./routes/auth');
 const users = require('./routes/users');
 const helmet = require('helmet');
 const xss = require('xss-clean');
-const sanitizeRequest = require('./middlewares/sanitize');
+const sanitizeRequest = require('./security/sanitize');
+const limiter = require('./security/limiter');
 require('dotenv').config();
 
 const app = express();
@@ -17,6 +18,7 @@ app.use(cors(corsSettings));
 app.use(xss());
 app.use(helmet());
 app.use(sanitizeRequest);
+app.use(limiter)
 
 // Mongoose connection
 database();

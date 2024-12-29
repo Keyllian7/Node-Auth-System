@@ -4,7 +4,7 @@ const authController = require('../controllers/authController');
 const files = require('../helpers/files'); 
 const { validateRequest } = require('../middlewares/validateRequest');
 const { registerValidation, loginValidation } = require('../validations/userValidation');
-const sanitizeRequest = require('../middlewares/sanitize');
+const sanitizeRequest = require('../security/sanitize');
 files('../swagger/auth')
 
 router.post('/register', sanitizeRequest, validateRequest(registerValidation), authController.register);
