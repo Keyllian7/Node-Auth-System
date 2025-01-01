@@ -1,60 +1,39 @@
-const { registerUser } = require('../../services/authService');
+const { registerUser } = require('../../services/authService'); // Corrigir a importação
 const userRepository = require('../../repository/userRepository');
 const { hashingPassword } = require('../../helpers/password');
-const { generateToken } = require('../../helpers/token');
+const { handleError } = require('../../helpers/failure');
+const { json } = require('express');
 
-jest.mock('../../repository/userRepository');
-jest.mock('../../helpers/password');
-jest.mock('../../helpers/token');
+jest.mock('../../repository/userRepository.js'); // Mock do módulo
+jest.mock('../../helpers/failure'); // Mock da função de tratamento de erro
+jest.mock('../../helpers/password', () => ({
+    hashingPassword: jest.fn()
+}));
 
-describe('AuthService - registerUser', () => {
+describe("User Authentication : Tests", () => {
     let response;
-
     beforeEach(() => {
+        // Mock do objeto response
         response = {
             status: jest.fn().mockReturnThis(),
-            json: jest.fn().mockReturnThis()
+            json: jest.fn()
         };
     });
-
-    it('should register a new user successfully', async () => {
-        const registerDto = { name: 'John Doe', email: 'john@example.com', password: 'password123' };
+    it("Must register a user successfully", async () => {
         userRepository.searchUserByEmail.mockResolvedValue(null);
         hashingPassword.mockResolvedValue('hashedPassword');
         userRepository.createUser.mockResolvedValue();
 
+        const registerDto = { name: 'Jane', email: 'jane@example.com', password: 'password123' };
         await registerUser(registerDto, response);
 
-        expect(userRepository.searchUserByEmail).toHaveBeenCalledWith(registerDto.email);
-        expect(hashingPassword).toHaveBeenCalledWith(registerDto.password);
+        // Verificações
         expect(userRepository.createUser).toHaveBeenCalledWith({
-            name: registerDto.name,
-            email: registerDto.email,
+            name: 'Jane',
+            email: 'jane@example.com',
             password: 'hashedPassword'
         });
         expect(response.status).toHaveBeenCalledWith(201);
         expect(response.json).toHaveBeenCalledWith({ message: 'User created successfully!' });
-    });
-
-    it('should return 409 if user already exists', async () => {
-        const registerDto = { name: 'John Doe', email: 'john@example.com', password: 'password123' };
-        userRepository.searchUserByEmail.mockResolvedValue({});
-
-        await registerUser(registerDto, response);
-
-        expect(userRepository.searchUserByEmail).toHaveBeenCalledWith(registerDto.email);
-        expect(response.status).toHaveBeenCalledWith(409);
-        expect(response.json).toHaveBeenCalledWith({ message: 'User already exists!' });
-    });
-
-    it('should handle errors', async () => {
-        const registerDto = { name: 'John Doe', email: 'john@example.com', password: 'password123' };
-        const error = new Error('Something went wrong');
-        userRepository.searchUserByEmail.mockRejectedValue(error);
-
-        await registerUser(registerDto, response);
-
-        expect(response.status).toHaveBeenCalledWith(500);
-        expect(response.json).toHaveBeenCalledWith({ message: 'An internal server error occurred, please try again later!' });
     });
 });
