@@ -1,4 +1,4 @@
-const { registerUser } = require('../../services/authService'); // Corrigir a importação
+const { registerUser } = require('../../services/authService');
 const userRepository = require('../../repository/userRepository');
 const { hashingPassword } = require('../../helpers/password');
 const { handleError } = require('../../helpers/failure');
@@ -35,5 +35,16 @@ describe("User Authentication : Tests", () => {
         });
         expect(response.status).toHaveBeenCalledWith(201);
         expect(response.json).toHaveBeenCalledWith({ message: 'User created successfully!' });
+    });
+    it("Must return an error when trying to register a user with an existing email", async () => {
+        userRepository.searchUserByEmail.mockResolvedValue({ email: 'jane@example.com' });
+
+        const registerDto = { name: 'Jane', email: 'jane@example.com', password: 'password123' };
+        await registerUser(registerDto, response);
+
+        // Verificações
+        expect(userRepository.searchUserByEmail).toHaveBeenCalledWith('jane@example.com');
+        expect(response.status).toHaveBeenCalledWith(409);
+        expect(response.json).toHaveBeenCalledWith({ message: 'User already exists!' });
     });
 });
