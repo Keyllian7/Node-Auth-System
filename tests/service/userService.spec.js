@@ -1,4 +1,4 @@
-const { updateUser, listUsers } = require('../../services/userService');
+const { updateUser, listUsers, removeUser } = require('../../services/userService');
 const userRepository = require('../../repository/userRepository');
 const { hashingPassword } = require('../../helpers/password');
 const { handleError } = require('../../helpers/failure');
@@ -64,6 +64,27 @@ describe("User Service : Tests", () => {
             userRepository.listUsers.mockRejectedValue(error);
 
             await listUsers(response);
+
+            expect(handleError).toHaveBeenCalledWith(response, error);
+        });
+    });
+
+    describe("removeUser", () => {
+        it("Must remove a user successfully", async () => {
+            userRepository.removeUser.mockResolvedValue();
+
+            await removeUser('userId', response);
+
+            expect(userRepository.removeUser).toHaveBeenCalledWith('userId');
+            expect(response.status).toHaveBeenCalledWith(200);
+            expect(response.json).toHaveBeenCalledWith({ message: 'User successfully removed!' });
+        });
+
+        it("Must handle errors during user removal", async () => {
+            const error = new Error('Database error');
+            userRepository.removeUser.mockRejectedValue(error);
+
+            await removeUser('userId', response);
 
             expect(handleError).toHaveBeenCalledWith(response, error);
         });
