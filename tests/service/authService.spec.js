@@ -47,4 +47,14 @@ describe("User Authentication : Tests", () => {
         expect(response.status).toHaveBeenCalledWith(409);
         expect(response.json).toHaveBeenCalledWith({ message: 'User already exists!' });
     });
+    it("Must handle errors during user registration", async () => {
+        const error = new Error('Database error');
+        userRepository.searchUserByEmail.mockRejectedValue(error);
+
+        const registerDto = { name: 'Jane', email: 'jane@example.com', password: 'password123' };
+        await registerUser(registerDto, response);
+
+        // Verificações
+        expect(handleError).toHaveBeenCalledWith(response, error);
+    });
 });
