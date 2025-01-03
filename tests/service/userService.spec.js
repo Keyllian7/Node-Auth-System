@@ -1,4 +1,4 @@
-const { updateUser } = require('../../services/userService');
+const { updateUser, listUsers } = require('../../services/userService');
 const userRepository = require('../../repository/userRepository');
 const { hashingPassword } = require('../../helpers/password');
 const { handleError } = require('../../helpers/failure');
@@ -42,6 +42,28 @@ describe("User Service : Tests", () => {
 
             const requestInformation = { name: 'Jane', email: 'jane@example.com', password: 'password123' };
             await updateUser('userId', requestInformation, response);
+
+            expect(handleError).toHaveBeenCalledWith(response, error);
+        });
+    });
+
+    describe("listUsers", () => {
+        it("Must list users successfully", async () => {
+            const users = [{ name: 'Jane', email: 'jane@example.com' }];
+            userRepository.listUsers.mockResolvedValue(users);
+
+            await listUsers(response);
+
+            expect(userRepository.listUsers).toHaveBeenCalled();
+            expect(response.status).toHaveBeenCalledWith(200);
+            expect(response.json).toHaveBeenCalledWith({ users });
+        });
+
+        it("Must handle errors during listing users", async () => {
+            const error = new Error('Database error');
+            userRepository.listUsers.mockRejectedValue(error);
+
+            await listUsers(response);
 
             expect(handleError).toHaveBeenCalledWith(response, error);
         });
