@@ -46,4 +46,17 @@ describe('User Repository Tests', () => {
             expect(result).toEqual(users);
         })
     })
+    describe('removeUser', () => {
+        it('Must remove a user by id', async () => {
+            const id = '12345678';
+            const deleteResult = { deletedCount: 1 };
+    
+            User.deleteOne.mockResolvedValue(deleteResult);
+    
+            const result = await userRepository.removeUser(id);
+    
+            expect(User.deleteOne).toHaveBeenCalledWith({ _id: id });
+            expect(result).toEqual(deleteResult);
+        });
+    });
 })
