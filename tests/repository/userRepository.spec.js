@@ -36,12 +36,13 @@ describe('User Repository Tests', () => {
                 { name: 'John', email: 'jhon@example.com', password: '1234' },
                 { name: 'Doe', email: 'doe@example.com', password: '1234' }
             ];
-            User.find().select.mockResolvedValue(users);
+            const selectMock = jest.fn().mockResolvedValue(users);
+            User.find.mockReturnValue({ select: selectMock });
 
             const result = await userRepository.listUsers();
 
             expect(User.find).toHaveBeenCalled();
-            expect(User.find().select).toHaveBeenCalledWith('-password -__v');
+            expect(selectMock).toHaveBeenCalledWith('-password -__v');
             expect(result).toEqual(users);
         })
     })
