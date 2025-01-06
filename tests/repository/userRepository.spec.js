@@ -59,4 +59,22 @@ describe('User Repository Tests', () => {
             expect(result).toEqual(deleteResult);
         });
     });
+    describe('searchUserById', () => {
+        it('Must search a user by id', async () => {
+            const id = '12345678'
+            const user = {
+                _id: id,
+                name: 'Jane',
+                email: 'jane@example.com'
+            }
+
+            User.findById.mockResolvedValue(user);
+
+            const result = await userRepository.searchUserById(id);
+
+            expect(User.findById).toHaveBeenCalledWith(id);
+            expect(result).toEqual(user);
+
+        })
+    })
 })
