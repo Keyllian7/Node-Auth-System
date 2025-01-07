@@ -77,4 +77,28 @@ describe('User Repository Tests', () => {
 
         })
     })
+    describe('updateUser', () => {
+        it('Must update a user successfully', async () => {
+            const id = '12345678';
+            const userInformation = { name: 'Jane', email: 'jane@example.com' };
+            const updatedUser = { _id: id, ...userInformation };
+
+            User.findByIdAndUpdate.mockResolvedValue(updatedUser);
+
+            const result = await userRepository.updateUser(id, userInformation);
+
+            expect(User.findByIdAndUpdate).toHaveBeenCalledWith(id, userInformation);
+            expect(result).toEqual(updatedUser);
+        });
+
+        it('Must handle errors during user update', async () => {
+            const id = '12345678';
+            const userInformation = { name: 'Jane', email: 'jane@example.com' };
+            const error = new Error('Database error');
+
+            User.findByIdAndUpdate.mockRejectedValue(error);
+
+            await expect(userRepository.updateUser(id, userInformation)).rejects.toThrow(error);
+        });
+    });
 })
