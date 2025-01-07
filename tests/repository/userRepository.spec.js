@@ -76,6 +76,14 @@ describe('User Repository Tests', () => {
             expect(result).toEqual(user);
 
         })
+        it('Must handle errors during user search by id', async () => {
+            const id = '12345678';
+            const error = new Error('Database error');
+
+            User.findById.mockRejectedValue(error);
+
+            await expect(userRepository.searchUserById(id)).rejects.toThrow(error);
+        });
     })
     describe('updateUser', () => {
         it('Must update a user successfully', async () => {
